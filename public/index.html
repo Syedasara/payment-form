@@ -1,0 +1,284 @@
+
+<style>
+    body {
+        background: #fff;
+    }
+
+    form {
+        margin: 0;
+        padding: 0;
+    }
+
+    .jsformWrapper {
+        border: 1px solid rgba(196, 21, 28, 0.50);
+        padding: 2rem;
+        width: 600px;
+        margin: 0 auto;
+        border-radius: 2px;
+        margin-top: 2rem;
+        box-shadow: 0 7px 5px #eee;
+        height: 350px;
+    }
+
+    .jsformWrapper .formFielWrapper label {
+        width: 300px;
+        float: left;
+    }
+
+    .jsformWrapper .formFielWrapper input {
+        width: 300px;
+        padding: 0.5rem;
+        border: 1px solid #ccc;
+        float: left;
+        font-family: sans-serif;
+    }
+
+    .jsformWrapper .formFielWrapper {
+        float: left;
+        margin-bottom: 1rem;
+    }
+
+    .jsformWrapper button {
+        background: rgba(196, 21, 28, 1);
+        border: none;
+        color: #fff;
+        width: 120px;
+        height: 40px;
+        line-height: 25px;
+        font-size: 16px;
+        font-family: sans-serif;
+        text-transform: uppercase;
+        border-radius: 2px;
+        cursor: pointer;
+    }
+
+    h3 {
+        text-align: center;
+        margin-top: 3rem;
+        color: rgba(196, 21, 28, 1);
+    }
+
+    _msg {
+        background-color: yellow;
+        font-size: 14px;
+
+
+    }
+</style>
+
+<h3>JazzCash HTTP POST (Page Redirection) Testing</h3>
+<div class="jsformWrapper">
+    <form name="jsform" method="post"
+        action="https://sandbox.jazzcash.com.pk/CustomerPortal/transactionmanagement/merchantform/">
+        <input type="hidden" name="pp_Version" value="1.1">
+        <input type="hidden" name="pp_TxnType" value="">
+        <input type="hidden" name="pp_Language" value="EN">
+        <input type="hidden" name="pp_MerchantID" value="MC20568">
+        <input type="hidden" name="pp_SubMerchantID" value="">
+        <input type="hidden" name="pp_Password" value="1605870gtd">
+        <input type="hidden" name="pp_BankID" value="TBANK">
+        <input type="hidden" name="pp_ProductID" value="RETL">
+        <input type="hidden" name="pp_TxnRefNo" id="pp_TxnRefNo" value="">
+
+        <!-- <div class="formFielWrapper">
+                                                    <label class="active">pp_TxnRefNo: </label>
+                                                    <input type="text" name="pp_TxnRefNo" id="pp_TxnRefNo" value="T20210618183457">
+                                                </div> -->
+
+        <div class="formFielWrapper">
+            <label class="active">pp_Amount: </label>
+            <input type="text" name="pp_Amount" value="1000">
+        </div>
+
+        <input type="hidden" name="pp_TxnCurrency" value="PKR">
+        <input type="hidden" name="pp_TxnDateTime" value="20210627030100">
+        <div class="formFielWrapper">
+            <label class="active">pp_BillReference: </label>
+            <input type="text" name="pp_BillReference" value="billRef">
+        </div>
+
+        <div class="formFielWrapper">
+            <label class="active">pp_Description: </label>
+            <input type="text" name="pp_Description" value="Description of transaction">
+        </div>
+
+        <input type="hidden" name="pp_TxnExpiryDateTime" value="20210628030100">
+
+        <div class="formFielWrapper">
+            <label class="active">pp_ReturnURL: </label>
+            <input type="text" name="pp_ReturnURL" value=" https://zakah-pay.web.app">
+        </div>
+
+        <input type="hidden" name="pp_SecureHash" value="">
+        <input type="hidden" name="ppmpf_1" value="1">
+        <input type="hidden" name="ppmpf_2" value="2">
+        <input type="hidden" name="ppmpf_3" value="3">
+        <input type="hidden" name="ppmpf_4" value="4">
+        <input type="hidden" name="ppmpf_5" value="5">
+        <button type="button" onclick="submitForm()">Submit</button>
+    </form>
+
+    <label id="salt" style="display:none;">dds2s9cxtu</label>
+    <br><br>
+    <div class="formFielWrapper">
+        <label class="active">Hash values string: </label>
+        <input type="text" id="hashValuesString" value="">
+        <br><br>
+    </div>
+
+</div>
+
+<script>
+    function CalculateDate() {
+        // var refNo= Date.now();
+        // console.log(refNo);
+        // var date = today.getFullYear() + (today.getMonth() + 1) + today.getDate();
+        // console.log("date=>",date )
+        var now = moment().format("YYYYMMDDhhmmss");
+        console.log(`date is ${now}`);
+        var expireNow = moment().add(1, "hours").format("YYYYMMDDhhmmss");
+        console.log(`expireNowdate is ${expireNow}`);
+        var refNo = "T" + now;
+        console.log(`refNo is ${refNo}`);
+        document.getElementsByName("pp_TxnDateTime")[0].value = now;
+        document.getElementsByName("pp_TxnExpiryDateTime")[0].value = expireNow;
+        document.getElementsByName("pp_TxnRefNo")[0].value = refNo;
+
+        // var today = new Date();
+        // var time = today.getHours() + ":" + today.getMinutes() + ":" + today.getSeconds();
+
+        // var time = parseInt(today.getHours() + today.getMinutes() + today.getSeconds());
+        // var t = time.toString();
+        // console.log("time=>", time)
+        // console.log("t in string=>", t)
+        // var dateTime = date + time;
+        // // var Exp= dateTime +
+        // console.log(dateTime);
+
+        // var ExpTime = today.getHours() + today.getMinutes() + 60 + today.getSeconds();
+        // console.log(ExpTime);
+        // var refNo = "T" + dateTime;
+        // console.log(refNo);
+
+    }
+    function CalculateHash() {
+        var IntegritySalt = document.getElementById("salt").innerText;
+        hashString = '';
+
+        hashString += IntegritySalt + '&';
+
+        if (document.getElementsByName("pp_Amount")[0].value != '') {
+            hashString += document.getElementsByName("pp_Amount")[0].value + '&';
+        }
+        if (document.getElementsByName("pp_BankID")[0].value != '') {
+            hashString += document.getElementsByName("pp_BankID")[0].value + '&';
+        }
+        if (document.getElementsByName("pp_BillReference")[0].value != '') {
+            hashString += document.getElementsByName("pp_BillReference")[0].value + '&';
+        }
+        if (document.getElementsByName("pp_Description")[0].value != '') {
+            hashString += document.getElementsByName("pp_Description")[0].value + '&';
+        }
+        if (document.getElementsByName("pp_Language")[0].value != '') {
+            hashString += document.getElementsByName("pp_Language")[0].value + '&';
+        }
+        if (document.getElementsByName("pp_MerchantID")[0].value != '') {
+            hashString += document.getElementsByName("pp_MerchantID")[0].value + '&';
+        }
+        if (document.getElementsByName("pp_Password")[0].value != '') {
+            hashString += document.getElementsByName("pp_Password")[0].value + '&';
+        }
+        if (document.getElementsByName("pp_ProductID")[0].value != '') {
+            hashString += document.getElementsByName("pp_ProductID")[0].value + '&';
+        }
+        if (document.getElementsByName("pp_ReturnURL")[0].value != '') {
+            hashString += document.getElementsByName("pp_ReturnURL")[0].value + '&';
+        }
+        if (document.getElementsByName("pp_SubMerchantID")[0].value != '') {
+            hashString += document.getElementsByName("pp_SubMerchantID")[0].value + '&';
+        }
+        if (document.getElementsByName("pp_TxnCurrency")[0].value != '') {
+            hashString += document.getElementsByName("pp_TxnCurrency")[0].value + '&';
+        }
+        if (document.getElementsByName("pp_TxnDateTime")[0].value != '') {
+            hashString += document.getElementsByName("pp_TxnDateTime")[0].value + '&';
+        }
+        if (document.getElementsByName("pp_TxnExpiryDateTime")[0].value != '') {
+            hashString += document.getElementsByName("pp_TxnExpiryDateTime")[0].value + '&';
+        }
+        if (document.getElementsByName("pp_TxnRefNo")[0].value != '') {
+            hashString += document.getElementsByName("pp_TxnRefNo")[0].value + '&';
+        }
+        if (document.getElementsByName("pp_TxnType")[0].value != '') {
+            hashString += document.getElementsByName("pp_TxnType")[0].value + '&';
+        }
+        if (document.getElementsByName("pp_Version")[0].value != '') {
+            hashString += document.getElementsByName("pp_Version")[0].value + '&';
+        }
+        if (document.getElementsByName("ppmpf_1")[0].value != '') {
+            hashString += document.getElementsByName("ppmpf_1")[0].value + '&';
+        }
+        if (document.getElementsByName("ppmpf_2")[0].value != '') {
+            hashString += document.getElementsByName("ppmpf_2")[0].value + '&';
+        }
+        if (document.getElementsByName("ppmpf_3")[0].value != '') {
+            hashString += document.getElementsByName("ppmpf_3")[0].value + '&';
+        }
+        if (document.getElementsByName("ppmpf_4")[0].value != '') {
+            hashString += document.getElementsByName("ppmpf_4")[0].value + '&';
+        }
+        if (document.getElementsByName("ppmpf_5")[0].value != '') {
+            hashString += document.getElementsByName("ppmpf_5")[0].value + '&';
+        }
+
+        hashString = hashString.slice(0, -1);
+        document.getElementById("hashValuesString").value = hashString;
+    }
+
+</script>
+
+
+<script>
+    function submitForm() {
+        CalculateDate();
+        CalculateHash();
+        var IntegritySalt = document.getElementById("salt").innerText;
+        var hash = CryptoJS.HmacSHA256(document.getElementById("hashValuesString").value, IntegritySalt);
+        document.getElementsByName("pp_SecureHash")[0].value = hash;
+
+
+        console.log('string: ' + hashString);
+        console.log('hash: ' + document.getElementsByName("pp_SecureHash")[0].value);
+        console.log('RefNO: ' + document.getElementsByName("pp_TxnRefNo")[0].value);
+
+
+        document.jsform.submit();
+    }
+
+
+</script>
+<script src="https://sandbox.jazzcash.com.pk/Sandbox/Scripts/hmac-sha256.js"></script>
+<script src="https://rawgit.com/moment/moment/2.2.1/min/moment.min.js"></script>
+<!-- The core Firebase JS SDK is always required and must be listed first -->
+<script src="https://www.gstatic.com/firebasejs/8.6.8/firebase-app.js"></script>
+
+<!-- TODO: Add SDKs for Firebase products that you want to use
+     https://firebase.google.com/docs/web/setup#available-libraries -->
+<script src="https://www.gstatic.com/firebasejs/8.6.8/firebase-analytics.js"></script>
+
+<script>
+  // Your web app's Firebase configuration
+  // For Firebase JS SDK v7.20.0 and later, measurementId is optional
+  var firebaseConfig = {
+    apiKey: "AIzaSyDIAez3ZBckLXb88998VoTJySAoOUQPp28",
+    authDomain: "zakah-pay-adae8.firebaseapp.com",
+    projectId: "zakah-pay-adae8",
+    storageBucket: "zakah-pay-adae8.appspot.com",
+    messagingSenderId: "671096059452",
+    appId: "1:671096059452:web:5a5bf4966a97a2e1853539",
+    measurementId: "G-4932G4D419"
+  };
+  // Initialize Firebase
+  firebase.initializeApp(firebaseConfig);
+  firebase.analytics();
+</script>
